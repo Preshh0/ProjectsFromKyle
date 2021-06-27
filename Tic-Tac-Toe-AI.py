@@ -115,13 +115,25 @@ def play(game, x_player, o_player, print_game = True):
             #     letter = 'X'
 
         # tiny break to make things easier to read
-        time.sleep(0.8)
+        if print_game:
+            time.sleep(0.8)
 
     if print_game:
         print('It\'s a tie!')
 
 if __name__ == '__main__':
-    x_player = HumanPlayer('X')
-    o_player = GeniusComputerPlayer('o')
-    t = TicTacToe()
-    play(t, x_player, o_player, print_game=True)
+    x_wins = 0
+    o_wins = 0
+    ties = 0
+    for _ in range(1000):
+        x_player = RandomComputerPlayer('X')
+        o_player = GeniusComputerPlayer('o')
+        t = TicTacToe()
+        result = play(t, x_player, o_player, print_game=False)
+        if result == 'X':
+            x_wins += 1
+        elif result == 'O':
+            o_wins += 1
+        else:
+            ties += 1
+    print(f'After 1000 iterations, we see {x_wins} X wins, {o_wins} O wins, {ties} ties.')
