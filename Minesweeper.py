@@ -27,7 +27,7 @@ class Board:
         but since we have a 2-D board, list of lists is most natural.
         '''
         # generates a new board
-        board = [[None for _ in range(self.dim_size)] for _ in range(self.dim_size) ]
+        board = [[0 for _ in range(self.dim_size)] for _ in range(self.dim_size) ]
         # this creates an array like this:
         # [
         #     [None, None, ...., None]
@@ -53,6 +53,7 @@ class Board:
         return board
 
     def assign_values_to_board(self):
+        
         '''
         now that we have bombs planted, let's assign a number 0-8 for all the empty spaces, which
         represents how many neighbouring bombs there are. we can precompute these and it'll save us some
@@ -61,9 +62,12 @@ class Board:
         for r in range(self.dim_size):
             for c in range(self.dim_size):
                 if self.board[r][c] == '*':
+                    #if this is already a bomb, don't calculate anything
                     continue
-                self.board[r][c] = self.get_num_neighbouring_bombs(r, c)
 
+                self.board[r][c] = self.get_num_neighbouring_bombs(r, c)
+            
+ 
     def get_num_neighbouring_bombs(self, row, col):
 
         num_neighbouring_bombs = 0
@@ -78,21 +82,22 @@ class Board:
     def dig(self, row, col):
         self.dug.add((row, col))
 
-        if self.board[row][col] == 'x':
+        if self.board[row][col] == '*':
             return False
         elif self.board[row][col] > 0:
             return True
         
         #self.board[row][col] == 0
-        for r in range(max(0, row-1), min(self.dim_size-1, (row+1))+1):
+        for r in range(max(0, row-1), min(self.dim_size-1, row+1)+1):
             for c in range(max(0, col-1), min(self.dim_size - 1, col+1)+1):
                 if (r, c) in self.dug:
                     continue
                 self.dig(r,c)
-
+        #if our initial dig didn't hit a bomb, we shouldn't hit a bomb here
         return True
 
     def __str__(self):
+
         visible_board = [[None for _ in range(self.dim_size)] for _ in range(self.dim_size)]
         for row in range(self.dim_size):
             for col in range(self.dim_size):
